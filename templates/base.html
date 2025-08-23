@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To-Do List</title>
+
+  <!-- Bootstrap 5 CSS (latest CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+      min-height: 100vh;
+      color: #f8f9fa;
+    }
+    .card {
+      background-color: #212529;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .task-label {
+      color: #f8f9fa;
+    }
+    .btn-outline-primary, .btn-outline-success, .btn-outline-danger {
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  {% if form.errors %}
+  <div class="alert alert-danger">
+      {{ form.errors }}
+  </div>
+  {% endif %}
+  
+  <!-- Dismissible alert (initially hidden) -->
+  {% for message in messages %}
+  <div class="position-fixed top-0 start-50 translate-middle-x pt-3" style="z-index: 1050;">
+    <div class="alert alert-{{message.tags}} alert-dismissible fade" role="alert">
+      {{message}}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Centered card container -->
+  {% block content %}
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-lg p-3" style="width:100%; max-width: 600px;">
+      <div class="card-body">
+        <h3 class="text-center mb-4 text-light">To-Do List</h3>
+
+        <!-- Add Task Input -->
+        <div class="input-group mb-3">
+          <input type="text" id="new-task-input" class="form-control" placeholder="Add a new task...">
+          <button class="btn btn-primary" id="add-task-btn">
+            <i class="bi bi-plus-lg"></i>
+          </button>
+        </div>
+
+        <!-- Task list -->
+        <ul class="list-group list-group-flush" id="todo-list">
+          <!-- Example task item -->
+          <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center flex-grow-1">
+              <input type="checkbox" class="form-check-input me-2">
+              <span class="task-label flex-grow-1">Sample Task</span>
+              <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task">
+            </div>
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-outline-primary edit-btn">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-outline-success save-btn d-none">
+                <i class="bi bi-check"></i>
+              </button>
+              <button type="button" class="btn btn-outline-danger delete-btn">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Inline JavaScript for interactivity -->
+  <script>
+    const todoList = document.getElementById('todo-list');
+    const alertBox = document.getElementById('update-alert');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const newTaskInput = document.getElementById('new-task-input');
+
+    // Function to create a new task item
+    function createTaskItem(taskText) {
+      const li = document.createElement('li');
+      li.className = "list-group-item bg-transparent text-light d-flex justify-content-between align-items-center";
+      li.innerHTML = `
+        <div class="d-flex align-items-center flex-grow-1">
+          <input type="checkbox" class="form-check-input me-2">
+          <span class="task-label flex-grow-1">${taskText}</span>
+          <input type="text" class="form-control edit-input d-none flex-grow-1" value="${taskText}">
+        </div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-outline-primary edit-btn">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button type="button" class="btn btn-outline-success save-btn d-none">
+            <i class="bi bi-check"></i>
+          </button>
+          <button type="button" class="btn btn-outline-danger delete-btn">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+      return li;
+    }
+
+    // Add task functionality
+    addTaskBtn.addEventListener('click', () => {
+      const taskText = newTaskInput.value.trim();
+      if (taskText !== "") {
+        const newTask = createTaskItem(taskText);
+        todoList.appendChild(newTask);
+        newTaskInput.value = "";
+      }
+    });
+
+    // Allow Enter key to add task
+    newTaskInput.addEventListener('keypress', (e) => {
+      if (e.key === "Enter") {
+        addTaskBtn.click();
+      }
+    });
+
+    // Handle edit, save, delete
+    todoList.addEventListener('click', function(event) {
+      const editBtn = event.target.closest('.edit-btn');
+      const saveBtn = event.target.closest('.save-btn');
+      const deleteBtn = event.target.closest('.delete-btn');
+
+      if (editBtn) {
+        const li = editBtn.closest('li');
+        const label = li.querySelector('.task-label');
+        const input = li.querySelector('.edit-input');
+        const editButton = li.querySelector('.edit-btn');
+        const saveButton = li.querySelector('.save-btn');
+        label.classList.add('d-none');
+        input.classList.remove('d-none');
+        input.value = label.textContent.trim();
+        input.focus();
+        editButton.classList.add('d-none');
+        saveButton.classList.remove('d-none');
+      }
+      if (saveBtn) {
+        const li = saveBtn.closest('li');
+        const label = li.querySelector('.task-label');
+        const input = li.querySelector('.edit-input');
+        const editButton = li.querySelector('.edit-btn');
+        const saveButton = li.querySelector('.save-btn');
+        label.textContent = input.value.trim();
+        input.classList.add('d-none');
+        label.classList.remove('d-none');
+        saveButton.classList.add('d-none');
+        editButton.classList.remove('d-none');
+        alertBox.classList.remove('d-none');
+        alertBox.classList.add('show');
+      }
+      if (deleteBtn) {
+        deleteBtn.closest('li').remove();
+      }
+    });
+
+    <!-- Inline JS for toggling edit/save -->
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const li = this.closest("li");
+        li.querySelector(".task-label").classList.add("d-none");
+        li.querySelector(".edit-input").classList.remove("d-none");
+        li.querySelector(".save-btn").classList.remove("d-none");
+        this.classList.add("d-none");
+      });
+    });
+
+    document.querySelectorAll(".save-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const li = this.closest("li");
+        const label = li.querySelector(".task-label");
+        const input = li.querySelector(".edit-input");
+        const editButton = li.querySelector(".edit-btn");
+        const saveButton = li.querySelector(".save-btn");
+        const form = li.querySelector(".edit-form");
+
+        // Update text
+        label.textContent = input.value.trim();
+
+        // Toggle back
+        input.classList.add("d-none");
+        label.classList.remove("d-none");
+        saveButton.classList.add("d-none");
+        editButton.classList.remove("d-none");
+
+        // Submit hidden form to Django
+        form.querySelector("input[name='new-title']").value = input.value.trim();
+        form.submit();
+      });
+    });
+  </script>
+</body>
+</html>
