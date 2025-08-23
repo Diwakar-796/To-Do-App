@@ -9,5 +9,5 @@ A simple Django-based To-Do application with CRUD operations and custom authenti
 2. Create a virtual environment and install dependencies:
     pip install -r requirements.txt
 3. Run migrations and start the server:
-    python manage.py migrate
+    python manage.py migrate, 
     python manage.py runserver
