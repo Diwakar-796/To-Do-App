@@ -5,4 +5,5 @@ from auths.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'bio']
+    list_editable = ['verified']
+    list_display = ['username', 'email', 'bio', 'verified']

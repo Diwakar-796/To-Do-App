@@ -7,7 +7,7 @@
         <div class="card-body">
             <!-- Back button and title -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="{% url 'home' %}" class="text-light text-decoration-none">
+                <a href="#" class="text-light text-decoration-none">
                     <i class="bi bi-arrow-left fs-5"></i>
                 </a>
                 <h3 class="text-center flex-grow-1 m-0">Profile</h3>
@@ -16,15 +16,19 @@
             <!-- Divider -->
             <hr class="my-4 border-light">
 
-            <div class="">
-                <p>Hi, {{request.user.username|title}}</p>
-                <p>Email: {{request.user.email}}</p>
-                <p>Bio: {{request.user.bio}}</p>
-                <a href="{% url 'sign-in' %}" class="text-light text-decoration-none">
-                    <i class="bi bi-box-arrow-right text-danger fs-5"></i>
-                </a>
+            <div class="d-flex">
+                <div>
+                    <img class="rounded-circle border border-white m-0 p-0" style="width: 100px; height:100px;" src="{% static 'assets/avatar/avatar-0.png' %}" alt="">
+                </div>
+                <div class="ms-4">
+                    <p>Hi, {{request.user.username|title}}</p>
+                    <p>Email: {{request.user.email}}</p>
+                    <p>Bio: {{request.user.bio}}</p>
+                    <a href="{% url 'sign-out' %}" class="text-light text-decoration-none">
+                        <i class="bi bi-box-arrow-right text-danger fs-5"></i>
+                    </a>
+                </div>
             </div>
-
         </div>
     </div>
 </div>

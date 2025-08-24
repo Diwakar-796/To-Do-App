@@ -22,7 +22,7 @@ def sign_in(request):
 def sign_out(request):
     logout(request)
     messages.success(request, "You logged out!")
-    return redirect(request, 'sign-in')
+    return redirect('sign-in')
 
 @login_required
 def profile(request):

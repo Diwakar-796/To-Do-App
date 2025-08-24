@@ -8,7 +8,39 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div></div>
                 <h3 class="text-center mb-4 text-light">To-Do List</h3>
-                {% if user.is_authenticated %}
+                <div class="dropdown">
+                     <button class="btn btn-secondary bg-transparent border-0 fs-5 mb-3" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>&#8942;</span> <!-- or &#x22EE; -->
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">
+                                <i class="bi bi-person-fill"></i>
+                                Profile
+                            </a>
+                        </li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'sign-in' %}">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Sign-in
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li><a class="dropdown-item" href="#">
+                                <i class="bi bi-info-circle"></i>
+                                About
+                            </a>
+                        </li>
+                        <li><a class="dropdown-item" href="#">
+                            <i class="bi bi-telephone-fill"></i>
+                            Contact Us</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+                {% comment %} {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}" class="bg-transparent border-0 mb-3">
                     <i class="bi bi-person-circle fs-5 mb-5"></i>
                 </a>
@@ -16,8 +48,11 @@
                 <a href="{% url 'sign-in' %}" class="text-light text-decoration-none mb-3">
                     <i class="bi bi-box-arrow-in-right fs-5"></i>
                 </a>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </div>
+
+            <!-- Divider -->
+            <hr class="my-4 border-light">
 
             <!-- Progress Section -->
             <div class="progress-box">
