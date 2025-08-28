@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="flex-grow-1 d-flex justify-content-center align-items-center">
+  <div class="text-center">
+    <div class="mb-4">
+      <span class="display-1 text-success">✔</span>
+    </div>
+    <h1 class="fw-bold">Thank You! 🎉</h1>
+    <p class="lead">Your donation has been received successfully.</p>
+    <a href="{% url 'home' %}" class="btn btn-success mt-3">Back to Home</a>
+  </div>
+</main>
+{% endblock %}

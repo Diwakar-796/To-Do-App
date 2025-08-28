@@ -32,12 +32,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # paypal integration
+    'paypal.standard.ipn',
+
+    # custom apps
     'core', 'auths',
 
 ]
@@ -129,6 +135,23 @@ MEDIA_ROOT = [BASE_DIR/'media']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'auths.User'
-# LOGIN_URL = 'login'
-# LOGIN_REDIRECT_URL = 'home'
-# LOGOUT_REDIRECT_URL = 'login'
+
+LOGIN_URL = 'sign-in'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'sign-in'
+
+JAZZMIN_SETTINGS = {
+    "site_title": "My To Do Admin",
+    "site_header": "To Do Dashboard",
+    "site_brand": "Add Task, & Complete",
+    "site_logo": "assets/logo/django.png",
+    "welcome_sign": "Welcome to your admin panel",
+    "copyright": "to-do.com",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+}
+
+PAYPAL_RECEIVER_EMAIL = 'sb-tg43ru45285273@business.example.com'
+PAYPAL_TEST = True

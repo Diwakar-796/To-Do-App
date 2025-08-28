@@ -1,14 +1,13 @@
-{% extends "base.html" %}
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block content %}
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card shadow-lg p-3" style="width:100%; max-width: 600px;">
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-                <div></div>
+            <div class="d-flex justify-content-center align-items-center">
                 <h3 class="text-center mb-4 text-light">To-Do List</h3>
-                <div class="dropdown">
+                {% comment %} <div class="dropdown">
                      <button class="btn btn-secondary bg-transparent border-0 fs-5 mb-3" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <span>&#8942;</span> <!-- or &#x22EE; -->
                     </button>
@@ -17,30 +16,30 @@
                         {% if user.is_authenticated %}
                         <li><a class="dropdown-item" href="{% url 'profile' %}">
                                 <i class="bi bi-person-fill"></i>
-                                Profile
+                                &nbsp;Profile
                             </a>
                         </li>
                         {% else %}
                         <li><a class="dropdown-item" href="{% url 'sign-in' %}">
                                 <i class="bi bi-box-arrow-in-right"></i>
-                                Sign-in
+                                &nbsp;Sign-in
                             </a>
                         </li>
                         {% endif %}
 
                         <li><a class="dropdown-item" href="#">
                                 <i class="bi bi-info-circle"></i>
-                                About
+                                &nbsp;About
                             </a>
                         </li>
                         <li><a class="dropdown-item" href="#">
                             <i class="bi bi-telephone-fill"></i>
-                            Contact Us</a>
+                            &nbsp;Contact Us</a>
                         </li>
                         
                     </ul>
                 </div>
-                {% comment %} {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}" class="bg-transparent border-0 mb-3">
                     <i class="bi bi-person-circle fs-5 mb-5"></i>
                 </a>
@@ -58,15 +57,13 @@
             <div class="progress-box">
                 <h6 class="text-center mb-4 text-light">Keep it up!</h6>
                 <div class="progress">
-                    <div class="progress-bar" style="width: {% widthratio task_done.count tasks.count 100 %}%;"></div>
+                    <div class="progress-bar" style="width: 50%;"></div>
                 </div>
-                <div class="progress-count">
-                    <span>{{task_done.count}} / {{tasks.count}}</span>
-                </div>
+                <br>
             </div>
 
             <!-- Add Task Input -->
-            <form method="POST" action="{% url 'add-task' %}" class="input-group mb-3">
+            <form method="POST" action="" class="input-group mb-3">
                 {% csrf_token %}
                 <input type="text" name="add-task" class="form-control rounded-start" placeholder="Add a new task...">
                 <button class="btn btn-primary" type="submit" id="add-task-btn">
@@ -76,34 +73,22 @@
 
             <!-- Task list -->
             <ul class="list-group list-group-flush" id="todo-list">
-                {% for task in tasks %}
                 <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center flex-grow-1">
 
                         <!-- Done/Undone -->
-                        <form action="{% url 'done-task' %}" method="POST" class="me-2">
-                            {% csrf_token %}
-                            <button type="submit" name="check" value="{{task.id}}" class="btn bg-transparent rounded-circle">
-                                {% if task.is_done %}
-                                    <i class="bi bi-check-circle text-success"></i>
-                                {% else %}
-                                    <i class="bi bi-x-circle text-danger"></i>
-                                {% endif %}
-                            </button>
-                        </form>
+                        <button type="submit" name="check" value="" class="btn bg-transparent rounded-circle">
+                            <i class="bi bi-check-circle text-success"></i>
+                        </button>
 
                         <!-- Task Label + Hidden Edit Input -->
-                        {% if task.is_done %}
-                            <span class="task-label text-decoration-line-through flex-grow-1">{{task.title}}</span>
-                        {% else %}
-                            <span class="task-label flex-grow-1">{{task.title}}</span>
-                        {% endif %}
-                        <input type="text" class="form-control edit-input d-none flex-grow-1" value="{{task.title}}">
+                        <span class="task-label text-decoration-line-through flex-grow-1">Sample Task 1</span>
+                        <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task 1">
                         
                         <!-- Hidden form for Django submission -->
-                        <form action="{% url 'edit-task' %}" method="POST" class="edit-form d-none">
+                        <form action="" method="POST" class="edit-form d-none">
                             {% csrf_token %}
-                            <input type="hidden" name="task_id" value="{{task.id}}">
+                            <input type="hidden" name="task_id" value="">
                             <input type="hidden" name="new-title">
                         </form>
                     </div>
@@ -117,15 +102,90 @@
                             <i class="bi bi-check"></i>
                         </button>
 
-                        <form method="POST" action="{% url 'del-task' %}">
+                        <form method="POST" action="">
                             {% csrf_token %}
-                            <button type="submit" name="del-task" value="{{task.id}}" class="btn btn-outline-danger delete-btn rounded">
+                            <button type="submit" name="del-task" value="" class="btn btn-outline-danger delete-btn rounded">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
                     </div>
                 </li>
-                {% endfor %}
+
+                <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center flex-grow-1">
+
+                        <!-- Done/Undone -->
+                        <button type="submit" name="check" value="" class="btn bg-transparent rounded-circle">
+                            <i class="bi bi-x-circle text-danger"></i>
+                        </button>
+
+                        <!-- Task Label + Hidden Edit Input -->
+                        <span class="task-label flex-grow-1">Sample Task 2</span>
+                        <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task 2">
+                        
+                        <!-- Hidden form for Django submission -->
+                        <form action="" method="POST" class="edit-form d-none">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="">
+                            <input type="hidden" name="new-title">
+                        </form>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-primary edit-btn rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-success save-btn d-none rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                            <i class="bi bi-check"></i>
+                        </button>
+
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <button type="submit" name="del-task" value="" class="btn btn-outline-danger delete-btn rounded">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+
+                 <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center flex-grow-1">
+
+                        <!-- Done/Undone -->
+                        <button type="submit" name="check" value="" class="btn bg-transparent rounded-circle">
+                            <i class="bi bi-x-circle text-danger"></i>
+                        </button>
+
+                        <!-- Task Label + Hidden Edit Input -->
+                        <span class="task-label flex-grow-1">Sample Task 3</span>
+                        <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task 3">
+                        
+                        <!-- Hidden form for Django submission -->
+                        <form action="" method="POST" class="edit-form d-none">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="">
+                            <input type="hidden" name="new-title">
+                        </form>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-primary edit-btn rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-success save-btn d-none rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                            <i class="bi bi-check"></i>
+                        </button>
+
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <button type="submit" name="del-task" value="" class="btn btn-outline-danger delete-btn rounded">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>

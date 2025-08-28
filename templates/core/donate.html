@@ -1,0 +1,74 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block header %}
+<header class="py-5 bg-primary text-white text-center">
+  <div class="container">
+    <h1 class="fw-bold">Support Our To-Do App 🙌</h1>
+    <p class="lead">Your donation keeps this project alive and growing 🚀</p>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card bg-dark text-light shadow-lg border-0">
+        <div class="card-body text-center p-5">
+
+          {% if not show_paypal %}
+            <!-- STEP 1: Pick amount and submit to /donate -->
+            <form method="POST" id="amount-form">
+              {% csrf_token %}
+              <h2 class="mb-4">Make a Donation</h2>
+              <p class="text-light-50 mb-4">Choose an amount or enter your custom amount below.</p>
+
+              <!-- Quick amount buttons -->
+              <div class="d-flex justify-content-center gap-3 mb-4">
+                <button type="button" class="btn btn-outline-light" data-amt="1">$1</button>
+                <button type="button" class="btn btn-outline-light" data-amt="10">$10</button>
+                <button type="button" class="btn btn-outline-light" data-amt="100">$100</button>
+              </div>
+
+              <!-- Custom amount -->
+              <div class="input-group mb-4 w-50 mx-auto">
+                <span class="input-group-text bg-dark text-light">$</span>
+                <input type="number" class="form-control bg-dark text-light border-white"
+                       name="amount" id="amount-input" placeholder="Enter custom amount" min="1" step="1">
+              </div>
+
+              <button type="submit" class="btn btn-success btn-lg">Continue</button>
+            </form>
+
+            <script>
+              // Fill and submit on quick button click
+              document.querySelectorAll('[data-amt]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                  const amt = btn.getAttribute('data-amt');
+                  const input = document.getElementById('amount-input');
+                  input.value = amt;
+                });
+              });
+            </script>
+
+          {% else %}
+            <!-- STEP 2: Show PayPal button generated from server-side amount -->
+            <h2 class="mb-3">You’re donating {{ amount }} USD</h2>
+            <p class="text-light-50 mb-4">Click the button below to complete your donation.</p>
+
+            <!-- DO NOT wrap this in another <form> (it renders its own form) -->
+            {{ paypal_payment_button.render }}
+
+            <div class="mt-4">
+              <a href="{% url 'donate' %}" class="btn btn-outline-light">Back</a>
+            </div>
+          {% endif %}
+
+          <p class="mt-4 text-light-50">Every contribution, big or small, means a lot. Thank you!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

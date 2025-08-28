@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="flex-grow-1 d-flex justify-content-center align-items-center">
+  <div class="text-center">
+    <div class="mb-4">
+      <span class="display-1 text-danger">✘</span>
+    </div>
+    <h1 class="fw-bold">Oops! Payment Failed ❌</h1>
+    <p class="lead">Something went wrong. Your payment was not completed.</p>
+    <a href="{% url 'donate' %}" class="btn btn-danger mt-3">Try Again</a>
+  </div>
+</main>
+{% endblock %}
