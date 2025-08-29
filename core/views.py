@@ -49,6 +49,10 @@ def del_task(request):
         messages.error(request, "Something went wrong.")
     return redirect('home')
 
+def filter_task(request):
+    
+    return redirect('home')
+
 @login_required
 def done_task(request):
     if request.method == "POST":

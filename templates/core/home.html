@@ -75,6 +75,22 @@
 
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="false" aria-controls="filterPanel">Filter</button>
 
+            <div class="collapse" id="filterPanel">
+                <div class="card card-body d-flex justify-content-end">
+                    <!-- Filter options here -->
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="filterOption" class="form-label">Filter Option</label>
+                            <select class="form-select" id="filterOption">
+                                <option value="option1">Option 1</option>
+                                <option value="option2">Option 2</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                    </form>
+                </div>
+            </div>
+
             <!-- Task list -->
             <ul class="list-group list-group-flush overflow-auto" style="max-height: 300px;" id="todo-list">
 
