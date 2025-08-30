@@ -13,3 +13,6 @@ media/
 # IDE/editor
 .vscode/
 .idea/
+
+# Templates
+async/

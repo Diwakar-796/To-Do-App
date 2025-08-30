@@ -33,21 +33,15 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-  {% if form.errors %}
-  <div class="alert alert-danger">
-      {{ form.errors }}
-  </div>
-  {% endif %}
-  
-  <!-- Dismissible alert (initially hidden) -->
+  {% comment %} <!-- Dismissible alert (initially hidden) -->
   {% for message in messages %}
   <div class="position-fixed top-0 start-50 translate-middle-x pt-3" style="z-index: 1050;">
     <div class="alert alert-{{message.tags}} alert-dismissible fade" role="alert">
       {{message}}
     </div>
   </div>
-  {% endfor %}
-  
+  {% endfor %} {% endcomment %}
+
   <!-- Navbar -->
   {% block navbar %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
@@ -88,6 +82,21 @@
   {% block header %}
   <header class=""></header>
   {% endblock %}
+
+  <!-- alert -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{message.tags}} p-2" role="alert">
+    <strong>{{message}}</strong>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if form.errors %}
+  <div class="alert alert-danger">
+      {{ form.errors }}
+  </div>
+  {% endif %}
 
   <!-- Centered card container -->
   {% block content %}

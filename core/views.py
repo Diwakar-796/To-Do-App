@@ -1,27 +1,35 @@
 from decimal import Decimal, InvalidOperation
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Task, User, Donate
+from .models import Task, Category, User, Donation
 
 from django.conf import settings
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 # Create your views here.
 
 def home(request):
+    categories = Category.objects.all()
+
     if request.user.is_authenticated:
         tasks = Task.objects.filter(user=request.user).order_by('-id')
         try:
             task_done = tasks.filter(is_done=True)
         except:
             task_done = 0
+
         context = {
             'tasks': tasks,
             'task_done': task_done,
+            'categories': categories,
         }
+        
         return render(request, 'core/home.html', context)
     else:
         return render(request, 'core/default.html')
@@ -29,12 +37,22 @@ def home(request):
 @login_required
 def add_task(request):
     if request.method == "POST":
-        new_task = request.POST.get('add-task')
-        if new_task:
-            Task.objects.create(title=new_task, user=request.user)
+        title = request.POST.get('add-task')
+        category_id = request.POST.get('category')
+        category = None
+
+        if category_id:  # only if user picked one
+            category = Category.objects.get(id=category_id, user=request.user)
+
+        if title:
+            Task.objects.create(
+                user=request.user,
+                title=title,
+                category=category
+            )
             messages.success(request, "Task added successfully.")
         else:
-            messages.error(request, "Task can't be empty.")
+            messages.warning(request, "Task can't be empty.")
         return redirect('home')
     return redirect('home')
 
@@ -47,10 +65,6 @@ def del_task(request):
         messages.success(request, "Task deleted successfully.")
     else:
         messages.error(request, "Something went wrong.")
-    return redirect('home')
-
-def filter_task(request):
-    
     return redirect('home')
 
 @login_required
@@ -86,6 +100,39 @@ def edit_task(request):
     return redirect('home')
 
 @login_required
+def filter_task(request):
+    if request.method == "POST":
+        category_id = request.POST.get("category")
+
+        if category_id == "All Tasks":
+            tasks = Task.objects.filter(user=request.user)
+        else:
+            tasks = Task.objects.filter(user=request.user, category_id=category_id)
+
+        categories = Category.objects.filter(user=request.user)
+        task_done = tasks.filter(is_done=True)
+
+        return render(request, "core/home.html", {
+            "tasks": tasks,
+            "categories": categories,
+            "task_done": task_done,
+        })
+
+    return redirect("home")
+
+@login_required
+def add_category(request):
+    if request.method == "POST":
+        title = request.POST.get('add-category')
+        if title:
+            Category.objects.create(user=request.user, title=title)
+            messages.success(request, "Category added successfully.")
+        else:
+            messages.error(request, "Task can't be empty.")
+        return redirect('home')
+    return redirect('home')
+
+@login_required
 def donate_view(request):
     if request.method == "POST":
         raw = (request.POST.get('amount') or "").strip()
@@ -106,7 +153,7 @@ def donate_view(request):
             return redirect("donate")
 
         # create a donation row only now (on POST with valid amount)
-        donation = Donate.objects.create(user=request.user, amount=amount)
+        donation = Donation.objects.create(user=request.user, amount=amount)
 
         host = request.get_host()
         paypal_dict = {

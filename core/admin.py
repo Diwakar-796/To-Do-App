@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Category, Donate
+from .models import Task, Category, Donation
 
 # Register your models here.
 
@@ -12,7 +12,7 @@ class TaskAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['title', 'created_at']
 
-@admin.register(Donate)
-class DonateAdmin(admin.ModelAdmin):
+@admin.register(Donation)
+class DonationAdmin(admin.ModelAdmin):
     list_editable = ['status']
     list_display = ['did', 'user', 'status', 'date']
