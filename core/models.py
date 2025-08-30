@@ -5,9 +5,9 @@ from shortuuid.django_fields import ShortUUIDField
 # Create your models here.
 
 LEVEL = (
-    ('low', 'Low'),
-    ('medium', 'Medium'),
-    ('hard', 'Hard'),
+    ('1', 'Low'),
+    ('2', 'Medium'),
+    ('3', 'High'),
 )
 
 STATUS = (
@@ -31,7 +31,7 @@ class Category(models.Model):
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, default=None)
-    level = models.CharField(choices=LEVEL, default='low', null=True, blank=True)
+    level = models.CharField(choices=LEVEL, default="1", null=True, blank=True)
     
     title = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)

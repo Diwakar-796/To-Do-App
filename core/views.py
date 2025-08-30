@@ -2,7 +2,7 @@ from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Task, Category, User, Donation
+from .models import Task, Category, Donation, LEVEL,  User
 
 from django.conf import settings
 from django.urls import reverse
@@ -18,7 +18,7 @@ def home(request):
     categories = Category.objects.all()
 
     if request.user.is_authenticated:
-        tasks = Task.objects.filter(user=request.user).order_by('-id')
+        tasks = Task.objects.filter(user=request.user).order_by('-level')
         try:
             task_done = tasks.filter(is_done=True)
         except:
@@ -28,6 +28,7 @@ def home(request):
             'tasks': tasks,
             'task_done': task_done,
             'categories': categories,
+            'levels': LEVEL,
         }
         
         return render(request, 'core/home.html', context)
@@ -39,6 +40,7 @@ def add_task(request):
     if request.method == "POST":
         title = request.POST.get('add-task')
         category_id = request.POST.get('category')
+        level = request.POST.get('level')
         category = None
 
         if category_id:  # only if user picked one
@@ -48,7 +50,8 @@ def add_task(request):
             Task.objects.create(
                 user=request.user,
                 title=title,
-                category=category
+                category=category,
+                level = level
             )
             messages.success(request, "Task added successfully.")
         else:
@@ -105,9 +108,9 @@ def filter_task(request):
         category_id = request.POST.get("category")
 
         if category_id == "All Tasks":
-            tasks = Task.objects.filter(user=request.user)
+            tasks = Task.objects.filter(user=request.user).order_by('-level')
         else:
-            tasks = Task.objects.filter(user=request.user, category_id=category_id)
+            tasks = Task.objects.filter(user=request.user, category_id=category_id).order_by('-level')
 
         categories = Category.objects.filter(user=request.user)
         task_done = tasks.filter(is_done=True)
