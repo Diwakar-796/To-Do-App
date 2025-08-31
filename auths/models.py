@@ -11,10 +11,10 @@ class User(AbstractUser):
     username = models.CharField(max_length=50, unique=True, null=True, blank=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
-    bio = models.TextField(max_length=50, null=True, blank=True)
+    bio = models.CharField(max_length=50, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     verified = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='profile/', null=True, blank=True)
+    image = models.ImageField(upload_to='profile/', default='assets/avatar/avatar-0.png')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

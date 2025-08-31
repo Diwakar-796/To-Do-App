@@ -9,8 +9,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 
-from django.template.loader import render_to_string
-from django.http import JsonResponse
+# from django.template.loader import render_to_string
+# from django.http import JsonResponse
 
 # Create your views here.
 
@@ -131,7 +131,7 @@ def add_category(request):
             Category.objects.create(user=request.user, title=title)
             messages.success(request, "Category added successfully.")
         else:
-            messages.error(request, "Task can't be empty.")
+            messages.warning(request, "Category can't be empty.")
         return redirect('home')
     return redirect('home')
 

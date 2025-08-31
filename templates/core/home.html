@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="card shadow-lg p-3" style="width:100%; max-width: 1000px;">
+    <div class="card shadow-lg p-3" style="width:100%; max-width: 700px;">
         <div class="card-body">
             <div>
                 <h3 class="text-center mb-4 text-light">To-Do List</h3>
@@ -77,7 +77,12 @@
                         
                         <!-- Category select -->
                         <div class="mb-3">
-                            <label for="category" class="form-label">Category</label>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="category" class="form-label">Category</label>
+                                <button class="btn btn-success rounded m-2" type="button" id="add-category" style="font-size: 15px">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                            </div>
                             <div class="d-flex gap-2">
                                 <select name="category" id="category" class="form-select">
                                     <option value="">-- No Category --</option>
@@ -93,6 +98,8 @@
                                 <input type="text" name="new-category" class="form-control bg-dark text-light border-light" placeholder="New category name...">
                             </div> {% endcomment %}
                         </div>
+
+                        <hr class="border-light">
 
                         <!-- Level select -->
                         <div>
@@ -210,17 +217,17 @@
 
                     <!-- Action Buttons -->
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-primary edit-btn rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
-                            <i class="bi bi-pencil"></i>
+                        <button type="button" class="btn btn-outline-primary edit-btn rounded fs-5" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                            <i class="bi bi-pencil-fill"></i>
                         </button>
-                        <button type="button" class="btn btn-outline-success save-btn d-none rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                        <button type="button" class="btn btn-outline-success save-btn d-none rounded fs-5" style="width: 42px; margin-right: 5px; margin-left: 5px;">
                             <i class="bi bi-check"></i>
                         </button>
 
                         <form method="POST" action="{% url 'del-task' %}">
                             {% csrf_token %}
-                            <button type="submit" name="del-task" value="{{task.id}}" class="btn btn-outline-danger delete-btn rounded">
-                                <i class="bi bi-trash"></i>
+                            <button type="submit" name="del-task" value="{{task.id}}" class="btn btn-outline-danger delete-btn rounded fs-5">
+                                <i class="bi bi-trash-fill"></i>
                             </button>
                         </form>
                     </div>
