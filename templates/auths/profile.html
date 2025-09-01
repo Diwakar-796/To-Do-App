@@ -18,19 +18,20 @@
 
             <div class="d-flex">
                 <div>
-                    <img class="rounded-circle border border-white m-0 p-0" style="width: 100px; height:100px;" src="{% static 'assets/avatar/avatar-0.png' %}" alt="">
+                    <img class="rounded-circle m-0 p-0" style="width: 100px; height:100px;" src="{{request.user.profile.img.url}}" alt="">
                 </div>
                 <div class="ms-4" style="width: 100%;">
                     <div class="d-flex justify-content-between">
                         <p>Hi, {{request.user.username|title}}</p>
-                        <a href="#" class="text-light text-decoration-none">
+                        <a href="{% url 'edit-profile' %}" class="text-light text-decoration-none">
                             <i class="bi bi-pencil bg-success rounded border border-success px-2 py-1"></i>
                         </a>
                     </div>
-                    <p>Bio: {{request.user.bio}}</p>
-                    <p>Phone: {{request.user.phone}}</p>
+                    <p>Bio: {{request.user.profile.bio}}</p>
+                    <p>Phone: {{request.user.profile.phone}}</p>
                     <p>Email: {{request.user.email}}</p>
-                    <p>Address: {{request.user.address}}</p>
+                    <p>Address: {{request.user.profile.address}}</p>
+                    <p>Country: {{request.user.profile.country}}</p>
                     <a href="{% url 'sign-out' %}" class="text-light text-decoration-none">
                         <i class="bi bi-box-arrow-right text-danger fs-4"></i>
                     </a>

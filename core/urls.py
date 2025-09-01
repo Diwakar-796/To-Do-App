@@ -10,6 +10,7 @@ urlpatterns = [
     path('edit-task/', views.edit_task, name="edit-task"),
 
     path('filter-task/', views.filter_task, name="filter-task"),
+    path('search-task/', views.search_task, name="search-task"),
 
     path('add-category/', views.add_category, name="add-category"),
 

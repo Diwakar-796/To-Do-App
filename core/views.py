@@ -9,29 +9,11 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 
-# from django.template.loader import render_to_string
-# from django.http import JsonResponse
-
 # Create your views here.
 
 def home(request):
-    categories = Category.objects.all()
-
     if request.user.is_authenticated:
-        tasks = Task.objects.filter(user=request.user).order_by('-level')
-        try:
-            task_done = tasks.filter(is_done=True)
-        except:
-            task_done = 0
-
-        context = {
-            'tasks': tasks,
-            'task_done': task_done,
-            'categories': categories,
-            'levels': LEVEL,
-        }
-        
-        return render(request, 'core/home.html', context)
+        return render(request, 'core/home.html')
     else:
         return render(request, 'core/default.html')
 
@@ -106,22 +88,27 @@ def edit_task(request):
 def filter_task(request):
     if request.method == "POST":
         category_id = request.POST.get("category")
+        level = request.POST.get("level")
 
         if category_id == "All Tasks":
-            tasks = Task.objects.filter(user=request.user).order_by('-level')
+            task = Task.objects.filter(user=request.user).order_by('-level')
         else:
-            tasks = Task.objects.filter(user=request.user, category_id=category_id).order_by('-level')
+            task = Task.objects.filter(user=request.user, category_id=category_id).order_by('-level')
 
-        categories = Category.objects.filter(user=request.user)
-        task_done = tasks.filter(is_done=True)
+        if level == "All Tasks":
+            tasks = task.filter(user=request.user)
+        else:
+            tasks = task.filter(user=request.user, level=level)
 
-        return render(request, "core/home.html", {
-            "tasks": tasks,
-            "categories": categories,
-            "task_done": task_done,
-        })
+        return render(request, "core/home.html", {"tasks": tasks})
 
     return redirect("home")
+
+@login_required
+def search_task(request):
+    query = request.GET.get('query')
+    tasks = Task.objects.filter(title__icontains=query)
+    return render(request, 'core/home.html', {'tasks': tasks})
 
 @login_required
 def add_category(request):

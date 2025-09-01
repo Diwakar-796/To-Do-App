@@ -6,7 +6,7 @@ from .models import Task, Category, Donation
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_editable = ['level', 'is_done']
-    list_display = ['title', 'user', 'level', 'created_at', 'is_done']
+    list_display = ['title', 'user', 'level', 'category', 'created_at', 'is_done']
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

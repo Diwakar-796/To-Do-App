@@ -77,10 +77,10 @@
                         
                         <!-- Category select -->
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
                                 <label for="category" class="form-label">Category</label>
-                                <button class="btn btn-success rounded m-2" type="button" id="add-category" style="font-size: 15px">
-                                    <i class="bi bi-plus-lg"></i>
+                                <button class="bg-success border border-0 text-white rounded mb-1 p-2" type="button" id="add-category" style="font-size: 15px" data-bs-toggle="collapse" data-bs-target="#categoryPanel" aria-expanded="false" aria-controls="categoryPanel">
+                                    Add category
                                 </button>
                             </div>
                             <div class="d-flex gap-2">
@@ -90,8 +90,6 @@
                                         <option value="{{category.id}}">{{category.title}}</option>
                                     {% endfor %}
                                 </select>
-                                {% comment %} <!-- Add Category button -->
-                                <button type="button" class="btn btn-sm btn-outline-success rounded circle bg-success text-white" data-bs-toggle="collapse" data-bs-target="#addCategoryInput" aria-expanded="false" aria-controls="addCategoryInput">+</button> {% endcomment %}
                             </div>
                             {% comment %} <!-- Hidden input field to add new category -->
                             <div class="collapse mt-2" id="addCategoryInput">
@@ -125,8 +123,8 @@
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="false" aria-controls="filterPanel">
                         Filter Tasks
                     </button>
-                    <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#categoryPanel" aria-expanded="false" aria-controls="categoryPanel">
-                        Add Category
+                    <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#searchPanel" aria-expanded="false" aria-controls="searchPanel">
+                        Search
                     </button>
                 </div>
 
@@ -136,13 +134,24 @@
                         <form method="POST" action="{% url 'filter-task' %}">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label for="filterOption" class="form-label">Filter by Category</label>
-                                <select class="form-select" id="filterOption" name="category">
-                                    <option value="All Tasks">All Tasks</option>
-                                    {% for category in categories %}
-                                        <option value="{{category.id}}">{{category.title}}</option>
-                                    {% endfor %}
-                                </select>
+                                <div>
+                                    <label for="filterOption" class="form-label">Filter by Category</label>
+                                    <select class="form-select" id="filterOption" name="category">
+                                        <option value="All Tasks">All Tasks</option>
+                                        {% for category in categories %}
+                                            <option value="{{category.id}}">{{category.title}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="filterOption" class="form-label mt-2">Filter by Priority</label>
+                                    <select class="form-select" id="filterOption" name="level">
+                                        <option value="All Tasks">All Tasks</option>
+                                        {% for level, label in levels %}
+                                            <option value="{{level}}">{{label}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Apply Filter</button>
@@ -161,6 +170,20 @@
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success">Add Category</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Search Panel -->
+                <div class="collapse mt-3" id="searchPanel" data-bs-parent="#filterCategoryWrapper">
+                    <div class="card card-body bg-dark text-light">
+                        <form method="GET" action="{% url 'search-task' %}">
+                            <div class="input-group">
+                                <input type="text" name="query" class="form-control bg-dark text-light border-light" placeholder="Search tasks..." value="{{ request.GET.q }}">
+                                <button type="submit" class="btn btn-outline-light bg-dark">
+                                    <i class="bi bi-search text-white"></i>
+                                </button>
                             </div>
                         </form>
                     </div>
