@@ -17,7 +17,7 @@ A simple Django-based To-Do application with CRUD operations and custom authenti
 
 4. Create the Super User to access the Django Admin Panel:
        python manage.py createsuperuser
-           - fill the all necessary details.
+           - fill all the necessary details.
 
 5. Start the Server:
        python manage.py runserver
