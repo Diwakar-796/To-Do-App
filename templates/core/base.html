@@ -1,0 +1,407 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To-Do List</title>
+
+  <!-- Bootstrap 5 CSS (latest CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  {% comment %} <!-- Dismissible alert (initially hidden) -->
+  {% for message in messages %}
+  <div class="position-fixed top-0 start-50 translate-middle-x pt-3" style="z-index: 1050;">
+    <div class="alert alert-{{message.tags}} alert-dismissible fade" role="alert">
+      {{message}}
+    </div>
+  </div>
+  {% endfor %} {% endcomment %}
+
+  <!-- Navbar -->
+  {% block navbar %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container d-flex justify-content-between">
+      <div>
+        <a class="navbar-brand fw-bold text-white" href="{% url 'home' %}">
+          <img class="" style="width: 50px; height: 50px;" src="{% static 'assets/logo/checklist.png' %}" alt="">
+          To-Do App
+        </a>
+      </div>
+      <div class="d-flex">
+        {% if user.is_authenticated %}
+          <a class="dropdown-item ms-4" href="{% url 'profile' %}">
+            <i class="bi bi-person-fill"></i>
+            &nbsp;Profile
+          </a>
+        {% else %}
+          <a class="dropdown-item ms-4" href="{% url 'sign-in' %}">
+            <i class="bi bi-box-arrow-in-right"></i>
+            &nbsp;Sign-in
+          </a>
+        {% endif %}
+
+        <a class="dropdown-item ms-4" href="#">
+          <i class="bi bi-info-circle"></i>
+          &nbsp;About
+        </a>
+        <a class="dropdown-item ms-4" href="#">
+          <i class="bi bi-telephone-fill"></i>
+          &nbsp;Contact Us
+        </a>
+        
+      </div>
+    </div>
+  </nav>
+  {% endblock %}
+
+  {% block header %}
+  <header class=""></header>
+  {% endblock %}
+
+  <!-- alert -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{message.tags}} p-2" role="alert">
+    <strong>{{message}}</strong>
+  </div>
+  {% endfor %}
+  {% endif %}
+  
+  <!-- Centered card container -->
+  {% block content %}
+  <main class="flex-grow-1">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card shadow-lg p-3" style="width:100%; max-width: 600px;">
+            <div class="card-body">
+                <div class="d-flex justify-content-center align-items-center">
+                    <h3 class="text-center mb-4 text-light">To-Do List</h3>
+                    {% comment %} <div class="dropdown">
+                        <button class="btn btn-secondary bg-transparent border-0 fs-5 mb-3" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span>&#8942;</span> <!-- or &#x22EE; -->
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                            {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">
+                                    <i class="bi bi-person-fill"></i>
+                                    &nbsp;Profile
+                                </a>
+                            </li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'sign-in' %}">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    &nbsp;Sign-in
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            <li><a class="dropdown-item" href="#">
+                                    <i class="bi bi-info-circle"></i>
+                                    &nbsp;About
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="bi bi-telephone-fill"></i>
+                                &nbsp;Contact Us</a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="bg-transparent border-0 mb-3">
+                        <i class="bi bi-person-circle fs-5 mb-5"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'sign-in' %}" class="text-light text-decoration-none mb-3">
+                        <i class="bi bi-box-arrow-in-right fs-5"></i>
+                    </a>
+                    {% endif %} {% endcomment %}
+                </div>
+
+                <!-- Divider -->
+                <hr class="my-4 border-light">
+
+                <!-- Progress Section -->
+                <div class="progress-box">
+                    <h6 class="text-center mb-4 text-light">Keep it up!</h6>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 50%;"></div>
+                    </div>
+                    <br>
+                </div>
+
+                <!-- Add Task Input -->
+                <form method="POST" action="" class="input-group mb-3">
+                    {% csrf_token %}
+                    <input type="text" name="add-task" class="form-control rounded-start" placeholder="Add a new task...">
+                    <button class="btn btn-primary" type="submit" id="add-task-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </form>
+
+                <!-- Task list -->
+                <ul class="list-group list-group-flush" id="todo-list">
+                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center flex-grow-1">
+
+                            <!-- Done/Undone -->
+                            <button type="submit" name="check" value="" class="btn bg-transparent rounded-circle">
+                                <i class="bi bi-check-circle text-success"></i>
+                            </button>
+
+                            <!-- Task Label + Hidden Edit Input -->
+                            <span class="task-label text-decoration-line-through flex-grow-1">Sample Task 1</span>
+                            <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task 1">
+                            
+                            <!-- Hidden form for Django submission -->
+                            <form action="" method="POST" class="edit-form d-none">
+                                {% csrf_token %}
+                                <input type="hidden" name="task_id" value="">
+                                <input type="hidden" name="new-title">
+                            </form>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary edit-btn rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-success save-btn d-none rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                                <i class="bi bi-check"></i>
+                            </button>
+
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <button type="submit" name="del-task" value="" class="btn btn-outline-danger delete-btn rounded">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center flex-grow-1">
+
+                            <!-- Done/Undone -->
+                            <button type="submit" name="check" value="" class="btn bg-transparent rounded-circle">
+                                <i class="bi bi-x-circle text-danger"></i>
+                            </button>
+
+                            <!-- Task Label + Hidden Edit Input -->
+                            <span class="task-label flex-grow-1">Sample Task 2</span>
+                            <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task 2">
+                            
+                            <!-- Hidden form for Django submission -->
+                            <form action="" method="POST" class="edit-form d-none">
+                                {% csrf_token %}
+                                <input type="hidden" name="task_id" value="">
+                                <input type="hidden" name="new-title">
+                            </form>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary edit-btn rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-success save-btn d-none rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                                <i class="bi bi-check"></i>
+                            </button>
+
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <button type="submit" name="del-task" value="" class="btn btn-outline-danger delete-btn rounded">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center flex-grow-1">
+
+                            <!-- Done/Undone -->
+                            <button type="submit" name="check" value="" class="btn bg-transparent rounded-circle">
+                                <i class="bi bi-x-circle text-danger"></i>
+                            </button>
+
+                            <!-- Task Label + Hidden Edit Input -->
+                            <span class="task-label flex-grow-1">Sample Task 3</span>
+                            <input type="text" class="form-control edit-input d-none flex-grow-1" value="Sample Task 3">
+                            
+                            <!-- Hidden form for Django submission -->
+                            <form action="" method="POST" class="edit-form d-none">
+                                {% csrf_token %}
+                                <input type="hidden" name="task_id" value="">
+                                <input type="hidden" name="new-title">
+                            </form>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary edit-btn rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-success save-btn d-none rounded" style="width: 42px; margin-right: 5px; margin-left: 5px;">
+                                <i class="bi bi-check"></i>
+                            </button>
+
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <button type="submit" name="del-task" value="" class="btn btn-outline-danger delete-btn rounded">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div> 
+  </main>
+  {% endblock %}
+
+  {% block footer %}
+  <!-- Footer -->
+  <footer class="d-flex bg-dark text-white justify-content-center py-3 mt-auto">
+    <p class="mb-0">&copy; {{ year }} To-Do App | &nbsp;</p>
+    <a clas="text-primary text-decoration-underline" href="#">Support us!</a>
+  </footer>
+  {% endblock %}
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Inline JavaScript for interactivity -->
+  <script>
+    const todoList = document.getElementById('todo-list');
+    const alertBox = document.getElementById('update-alert');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const newTaskInput = document.getElementById('new-task-input');
+
+    // Function to create a new task item
+    function createTaskItem(taskText) {
+      const li = document.createElement('li');
+      li.className = "list-group-item bg-transparent text-light d-flex justify-content-between align-items-center";
+      li.innerHTML = `
+        <div class="d-flex align-items-center flex-grow-1">
+          <input type="checkbox" class="form-check-input me-2">
+          <span class="task-label flex-grow-1">${taskText}</span>
+          <input type="text" class="form-control edit-input d-none flex-grow-1" value="${taskText}">
+        </div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-outline-primary edit-btn">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button type="button" class="btn btn-outline-success save-btn d-none">
+            <i class="bi bi-check"></i>
+          </button>
+          <button type="button" class="btn btn-outline-danger delete-btn">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+      return li;
+    }
+
+    // Add task functionality
+    addTaskBtn.addEventListener('click', () => {
+      const taskText = newTaskInput.value.trim();
+      if (taskText !== "") {
+        const newTask = createTaskItem(taskText);
+        todoList.appendChild(newTask);
+        newTaskInput.value = "";
+      }
+    });
+
+    // Allow Enter key to add task
+    newTaskInput.addEventListener('keypress', (e) => {
+      if (e.key === "Enter") {
+        addTaskBtn.click();
+      }
+    });
+
+    // Handle edit, save, delete
+    todoList.addEventListener('click', function(event) {
+      const editBtn = event.target.closest('.edit-btn');
+      const saveBtn = event.target.closest('.save-btn');
+      const deleteBtn = event.target.closest('.delete-btn');
+
+      if (editBtn) {
+        const li = editBtn.closest('li');
+        const label = li.querySelector('.task-label');
+        const input = li.querySelector('.edit-input');
+        const editButton = li.querySelector('.edit-btn');
+        const saveButton = li.querySelector('.save-btn');
+        label.classList.add('d-none');
+        input.classList.remove('d-none');
+        input.value = label.textContent.trim();
+        input.focus();
+        editButton.classList.add('d-none');
+        saveButton.classList.remove('d-none');
+      }
+      if (saveBtn) {
+        const li = saveBtn.closest('li');
+        const label = li.querySelector('.task-label');
+        const input = li.querySelector('.edit-input');
+        const editButton = li.querySelector('.edit-btn');
+        const saveButton = li.querySelector('.save-btn');
+        label.textContent = input.value.trim();
+        input.classList.add('d-none');
+        label.classList.remove('d-none');
+        saveButton.classList.add('d-none');
+        editButton.classList.remove('d-none');
+        alertBox.classList.remove('d-none');
+        alertBox.classList.add('show');
+      }
+      if (deleteBtn) {
+        deleteBtn.closest('li').remove();
+      }
+    });
+
+    <!-- Inline JS for toggling edit/save -->
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const li = this.closest("li");
+        li.querySelector(".task-label").classList.add("d-none");
+        li.querySelector(".edit-input").classList.remove("d-none");
+        li.querySelector(".save-btn").classList.remove("d-none");
+        this.classList.add("d-none");
+      });
+    });
+
+    document.querySelectorAll(".save-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const li = this.closest("li");
+        const label = li.querySelector(".task-label");
+        const input = li.querySelector(".edit-input");
+        const editButton = li.querySelector(".edit-btn");
+        const saveButton = li.querySelector(".save-btn");
+        const form = li.querySelector(".edit-form");
+
+        // Update text
+        label.textContent = input.value.trim();
+
+        // Toggle back
+        input.classList.add("d-none");
+        label.classList.remove("d-none");
+        saveButton.classList.add("d-none");
+        editButton.classList.remove("d-none");
+
+        // Submit hidden form to Django
+        form.querySelector("input[name='new-title']").value = input.value.trim();
+        form.submit();
+      });
+    });
+  </script>
+</body>
+</html>

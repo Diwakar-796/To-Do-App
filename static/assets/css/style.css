@@ -1,0 +1,37 @@
+body {
+  background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+  min-height: 100vh;
+  color: #f8f9fa;
+}
+.card {
+  background-color: #212529;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+.task-label {
+  color: #f8f9fa;
+}
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-danger {
+  border-radius: 50%;
+}
+/* Dark theme input fields 
+.form-control {
+  background-color: #212529 !important; 
+  color: #fff !important;              
+  border: 1px solid #444;             
+}*/
+
+/* Keep dark theme on focus 
+.form-control:focus {
+  background-color: #212529 !important;
+  color: #fff !important;
+  border-color: #0d6efd; 
+  box-shadow: none;
+}*/
+
+/* Placeholder text white/gray 
+.form-control::placeholder {
+  color: #aaa !important;
+}*/
